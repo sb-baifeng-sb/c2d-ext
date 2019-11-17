@@ -27,6 +27,8 @@
 
 namespace c2dext {
 
+using namespace cocos2d;
+
 void TableViewCell::reset()
 {
     _idx = CC_INVALID_INDEX;
