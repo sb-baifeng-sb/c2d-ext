@@ -61,6 +61,8 @@ public:
     typedef std::function<void(Context& c, Result& r)> CallBack;
     typedef std::map<std::string, CallBack> CallBackMap;
 public:
+    CREATE_FUNC(QuickTableView);
+public:
     void setCallback(std::string const& apiName, CallBack const& f);
 protected:
     // scroll view delegate

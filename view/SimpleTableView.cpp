@@ -76,7 +76,7 @@ void QuickTableView::scrollViewDidScroll(ScrollView* view) {
     auto iter = mCallback.find("scrollViewDidScroll");
     if (iter != mCallback.end()) {
         Context c(this, nullptr, 0);
-        Result r();
+        Result r;
         iter->second(c, r);
     }
 }
@@ -85,7 +85,7 @@ void QuickTableView::scrollViewDidZoom(ScrollView* view) {
     auto iter = mCallback.find("scrollViewDidZoom");
     if (iter != mCallback.end()) {
         Context c(this, nullptr, 0);
-        Result r();
+        Result r;
         iter->second(c, r);
     }
 }
@@ -94,7 +94,7 @@ void QuickTableView::tableCellTouched(TableView* table, TableViewCell* cell) {
     auto iter = mCallback.find("tableCellTouched");
     if (iter != mCallback.end()) {
         Context c(table, cell, 0);
-        Result r();
+        Result r;
         iter->second(c, r);
     }
 }
@@ -103,7 +103,7 @@ void QuickTableView::tableCellHighlight(TableView* table, TableViewCell* cell) {
     auto iter = mCallback.find("tableCellHighlight");
     if (iter != mCallback.end()) {
         Context c(table, cell, 0);
-        Result r();
+        Result r;
         iter->second(c, r);
     }
 }
@@ -112,7 +112,7 @@ void QuickTableView::tableCellUnhighlight(TableView* table, TableViewCell* cell)
     auto iter = mCallback.find("tableCellUnhighlight");
     if (iter != mCallback.end()) {
         Context c(table, cell, 0);
-        Result r();
+        Result r;
         iter->second(c, r);
     }
 }
@@ -121,7 +121,7 @@ void QuickTableView::tableCellWillRecycle(TableView* table, TableViewCell* cell)
     auto iter = mCallback.find("tableCellWillRecycle");
     if (iter != mCallback.end()) {
         Context c(table, cell, 0);
-        Result r();
+        Result r;
         iter->second(c, r);
     }
 }
@@ -130,7 +130,7 @@ cocos2d::Size QuickTableView::cellSizeForTable(TableView* table) {
     auto iter = mCallback.find("cellSizeForTable");
     if (iter != mCallback.end()) {
         Context c(table, nullptr, 0);
-        Result r();
+        Result r;
         iter->second(c, r);
         return r.cellSize;
     }
@@ -141,7 +141,7 @@ cocos2d::Size QuickTableView::tableCellSizeForIndex(TableView* table, ssize_t id
     auto iter = mCallback.find("tableCellSizeForIndex");
     if (iter != mCallback.end()) {
         Context c(table, nullptr, idx);
-        Result r();
+        Result r;
         iter->second(c, r);
         return r.cellSize;
     }
@@ -152,7 +152,7 @@ TableViewCell* QuickTableView::tableCellAtIndex(TableView *table, ssize_t idx) {
     auto iter = mCallback.find("tableCellAtIndex");
     if (iter != mCallback.end()) {
         Context c(table, nullptr, idx);
-        Result r();
+        Result r;
         iter->second(c, r);
         return r.cell;
     }
@@ -163,7 +163,7 @@ ssize_t QuickTableView::numberOfCellsInTableView(TableView *table) {
     auto iter = mCallback.find("tableCellAtIndex");
     if (iter != mCallback.end()) {
         Context c(table, nullptr, 0);
-        Result r();
+        Result r;
         iter->second(c, r);
         return r.size;
     }
