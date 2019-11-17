@@ -18,12 +18,6 @@ public:
     CREATE_FUNC(SimpleTableView);
     SimpleTableView();
     ~SimpleTableView();
-public:
-    virtual void setContentSize(cocos2d::Size const& size) override;
-protected:
-    // scroll view delegate
-    virtual void scrollViewDidScroll(ScrollView* view) override;
-    virtual void scrollViewDidZoom(ScrollView* view) override;
 protected:
     // table view delegate
     virtual void tableCellTouched(TableView* table, TableViewCell* cell) override;
@@ -53,21 +47,18 @@ public:
     public:
         cocos2d::Size cellSize;
         TableViewCell* cell;
-        ssize_t size;
+        ssize_t number;
     public:
-        Result():cell(nullptr), size(0){}
-        Result(cocos2d::Size const& cellSize, TableViewCell* cell, ssize_t size):cellSize(cellSize), cell(cell), size(size){}
+        Result():cell(nullptr), number(0){}
+        Result(cocos2d::Size const& cellSize, TableViewCell* cell, ssize_t size):cellSize(cellSize), cell(cell), number(size){}
     };
     typedef std::function<void(Context& c, Result& r)> CallBack;
     typedef std::map<std::string, CallBack> CallBackMap;
 public:
+    static QuickTableView* create(cocos2d::Size const& size);
     CREATE_FUNC(QuickTableView);
 public:
     void setCallback(std::string const& apiName, CallBack const& f);
-protected:
-    // scroll view delegate
-    virtual void scrollViewDidScroll(ScrollView* view) override;
-    virtual void scrollViewDidZoom(ScrollView* view) override;
 protected:
     // table view delegate
     virtual void tableCellTouched(TableView* table, TableViewCell* cell) override;

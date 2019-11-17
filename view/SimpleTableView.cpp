@@ -25,19 +25,6 @@ SimpleTableView::SimpleTableView() {
 SimpleTableView::~SimpleTableView() {
 }
 
-void SimpleTableView::setContentSize(cocos2d::Size const& size) {
-    TableView::setContentSize(size);
-    this->initWithViewSize(size);
-}
-
-void SimpleTableView::scrollViewDidScroll(ScrollView* view) {
-
-}
-
-void SimpleTableView::scrollViewDidZoom(ScrollView* view) {
-
-}
-
 void SimpleTableView::tableCellTouched(TableView* table, TableViewCell* cell) {
 
 }
@@ -72,22 +59,17 @@ ssize_t SimpleTableView::numberOfCellsInTableView(TableView *table) {
 
 //=======================================================================
 
-void QuickTableView::scrollViewDidScroll(ScrollView* view) {
-    auto iter = mCallback.find("scrollViewDidScroll");
-    if (iter != mCallback.end()) {
-        Context c(this, nullptr, 0);
-        Result r;
-        iter->second(c, r);
+QuickTableView* QuickTableView::create(cocos2d::Size const& size) {
+    auto view = new (std::nothrow) QuickTableView;
+    if (view && view->initWithViewSize(size)) {
+        view->autorelease();
+        return view;
     }
+    return nullptr;
 }
 
-void QuickTableView::scrollViewDidZoom(ScrollView* view) {
-    auto iter = mCallback.find("scrollViewDidZoom");
-    if (iter != mCallback.end()) {
-        Context c(this, nullptr, 0);
-        Result r;
-        iter->second(c, r);
-    }
+void QuickTableView::setCallback(std::string const& apiName, CallBack const& f) {
+    this->mCallback.insert(std::make_pair(apiName, f));
 }
 
 void QuickTableView::tableCellTouched(TableView* table, TableViewCell* cell) {
@@ -160,12 +142,12 @@ TableViewCell* QuickTableView::tableCellAtIndex(TableView *table, ssize_t idx) {
 }
 
 ssize_t QuickTableView::numberOfCellsInTableView(TableView *table) {
-    auto iter = mCallback.find("tableCellAtIndex");
+    auto iter = mCallback.find("numberOfCellsInTableView");
     if (iter != mCallback.end()) {
         Context c(table, nullptr, 0);
         Result r;
         iter->second(c, r);
-        return r.size;
+        return r.number;
     }
     return 0;
 }
