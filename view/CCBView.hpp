@@ -88,6 +88,7 @@ void EnableNodeTouch(cocos2d::Node* node);
 
 #ifndef CCB_VIRTUAL_CREATE_NODE
 #define CCB_VIRTUAL_CREATE_NODE(T) virtual T * createNode(cocos2d::Node * pParent, cocosbuilder::CCBReader * ccbReader) override { \
+    using namespace c2dext; \
     auto node = T::create(); \
     auto p = dynamic_cast<CCBView*>(node); \
     if (p != nullptr) { \
