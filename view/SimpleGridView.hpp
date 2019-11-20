@@ -13,6 +13,10 @@
 
 namespace c2dext {
 
+/*
+must call: gridView->setColNum(5);
+*/
+
 class SimpleGridView : public GridView, public TableViewDataSource, public TableViewDelegate {
 public:
     static SimpleGridView* create(cocos2d::Size const& size);

@@ -12,6 +12,7 @@ namespace c2dext {
 SimpleGridView* SimpleGridView::create(cocos2d::Size const& size) {
     auto view = new (std::nothrow) SimpleGridView;
     if (view && view->initWithViewSize(size)) {
+        view->setVerticalFillOrder(TableView::VerticalFillOrder::TOP_DOWN);
         view->autorelease();
         return view;
     }
@@ -63,6 +64,7 @@ ssize_t SimpleGridView::numberOfCellsInTableView(TableView *table) {
 QuickGridView* QuickGridView::create(cocos2d::Size const& size) {
     auto view = new (std::nothrow) QuickGridView;
     if (view && view->initWithViewSize(size)) {
+        view->setVerticalFillOrder(TableView::VerticalFillOrder::TOP_DOWN);
         view->autorelease();
         return view;
     }
