@@ -5,5 +5,6 @@
 #include "view/CCBView.hpp"
 #include "view/SimpleTableView.hpp"
 #include "view/SimpleGridView.hpp"
+#include "view/TouchableView.hpp"
 
 #endif
