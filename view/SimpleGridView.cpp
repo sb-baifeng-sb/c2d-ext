@@ -78,7 +78,7 @@ void QuickGridView::setCallback(std::string const& apiName, CallBack const& f) {
 void QuickGridView::tableCellTouched(TableView* table, TableViewCell* cell) {
     auto iter = mCallback.find("tableCellTouched");
     if (iter != mCallback.end()) {
-        Context c(table, cell, 0);
+        Context c(table, cell, cell->getIdx());
         Result r;
         iter->second(c, r);
     }
@@ -87,7 +87,7 @@ void QuickGridView::tableCellTouched(TableView* table, TableViewCell* cell) {
 void QuickGridView::tableCellHighlight(TableView* table, TableViewCell* cell) {
     auto iter = mCallback.find("tableCellHighlight");
     if (iter != mCallback.end()) {
-        Context c(table, cell, 0);
+        Context c(table, cell, cell->getIdx());
         Result r;
         iter->second(c, r);
     }
@@ -96,7 +96,7 @@ void QuickGridView::tableCellHighlight(TableView* table, TableViewCell* cell) {
 void QuickGridView::tableCellUnhighlight(TableView* table, TableViewCell* cell) {
     auto iter = mCallback.find("tableCellUnhighlight");
     if (iter != mCallback.end()) {
-        Context c(table, cell, 0);
+        Context c(table, cell, cell->getIdx());
         Result r;
         iter->second(c, r);
     }
@@ -105,7 +105,7 @@ void QuickGridView::tableCellUnhighlight(TableView* table, TableViewCell* cell) 
 void QuickGridView::tableCellWillRecycle(TableView* table, TableViewCell* cell) {
     auto iter = mCallback.find("tableCellWillRecycle");
     if (iter != mCallback.end()) {
-        Context c(table, cell, 0);
+        Context c(table, cell, cell->getIdx());
         Result r;
         iter->second(c, r);
     }
