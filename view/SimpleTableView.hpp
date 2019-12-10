@@ -32,16 +32,19 @@ protected:
     virtual ssize_t numberOfCellsInTableView(TableView *table) override;
 };
 
-class QuickTableView : public SimpleTableView {
+class QuickTableView : public TableView {
+    class Delegate;
 public:
     class Context {
     public:
+        ScrollView* scroll;
         TableView* sender;
         TableViewCell* cell;
         ssize_t index;
     public:
         Context():sender(nullptr), cell(nullptr), index(0){}
         Context(TableView* table, TableViewCell* cell, ssize_t idx):sender(table), cell(cell), index(idx){}
+        Context(ScrollView* scroll):scroll(scroll), sender(nullptr), cell(nullptr), index(0){}
     };
     class Result {
     public:
@@ -57,22 +60,12 @@ public:
 public:
     static QuickTableView* create(cocos2d::Size const& size);
     CREATE_FUNC(QuickTableView);
+    QuickTableView();
+    ~QuickTableView();
 public:
     void setCallback(std::string const& apiName, CallBack const& f);
-protected:
-    // table view delegate
-    virtual void tableCellTouched(TableView* table, TableViewCell* cell) override;
-    virtual void tableCellHighlight(TableView* table, TableViewCell* cell) override;
-    virtual void tableCellUnhighlight(TableView* table, TableViewCell* cell) override;
-    virtual void tableCellWillRecycle(TableView* table, TableViewCell* cell) override;
-protected:
-    // dataSource
-    virtual cocos2d::Size cellSizeForTable(TableView* table) override; // no use
-    virtual cocos2d::Size tableCellSizeForIndex(TableView* table, ssize_t idx) override;
-    virtual TableViewCell* tableCellAtIndex(TableView *table, ssize_t idx) override;
-    virtual ssize_t numberOfCellsInTableView(TableView *table) override;
 private:
-    CallBackMap mCallback;
+    Delegate* mDelegate;
 };
 
 }
