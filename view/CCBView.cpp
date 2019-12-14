@@ -68,9 +68,13 @@ void CCB::removeClass(std::string const& className) {
 }
 
 cocos2d::Node* CCB::nodeFromCCB(std::string const& fileName) {
+    return this->nodeFromCCB(fileName, nullptr);
+}
+
+cocos2d::Node* CCB::nodeFromCCB(std::string const& fileName, cocos2d::Ref* owner) {
     this->buildLoader();
     cocosbuilder::CCBReader* reader = new cocosbuilder::CCBReader(mLoader);
-    auto node = reader->readNodeGraphFromFile(fileName.c_str());
+    auto node = reader->readNodeGraphFromFile(fileName.c_str(), owner);
     reader->release();
     return node;
 }

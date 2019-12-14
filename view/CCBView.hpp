@@ -25,6 +25,7 @@ public:
     void registerClass(std::string const& className, cocosbuilder::NodeLoader* loader);
     void removeClass(std::string const& className);
     cocos2d::Node* nodeFromCCB(std::string const& fileName);
+    cocos2d::Node* nodeFromCCB(std::string const& fileName, cocos2d::Ref* owner);
 private:
     void buildLoader();
 private:
