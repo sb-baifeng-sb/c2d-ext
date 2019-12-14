@@ -86,6 +86,7 @@ protected:
 void DisableNodeTouchForTime(cocos2d::Node* node, float duration);
 void DisableNodeTouchForever(cocos2d::Node* node);
 void EnableNodeTouch(cocos2d::Node* node);
+void EnableNodeOpacity(cocos2d::Node* node);
 
 #ifndef CCB_VIRTUAL_CREATE_NODE
 #define CCB_VIRTUAL_CREATE_NODE(T) virtual T * createNode(cocos2d::Node * pParent, cocosbuilder::CCBReader * ccbReader) override { \

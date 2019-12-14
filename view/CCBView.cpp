@@ -187,4 +187,11 @@ void EnableNodeTouch(cocos2d::Node* node) {
     }
 }
 
+void EnableNodeOpacity(cocos2d::Node* node) {
+    node->setCascadeOpacityEnabled(true);
+    for (auto view : node->getChildren()) {
+        EnableNodeOpacity(view);
+    }
+}
+
 }
