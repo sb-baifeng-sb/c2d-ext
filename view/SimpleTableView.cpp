@@ -61,9 +61,12 @@ ssize_t SimpleTableView::numberOfCellsInTableView(TableView *table) {
 
 class QuickTableView::Delegate : public TableViewDataSource, public TableViewDelegate {
     friend class QuickTableView;
-    typedef QuickTableView::CallBackMap CallBackMap;
-    typedef QuickTableView::Context Context;
-    typedef QuickTableView::Result Result;
+private:
+    typedef QuickTableView::TouchCellCallBackMap TouchCellCallBackMap;
+    typedef QuickTableView::ScrollCallBackMap ScrollCallBackMap;
+    typedef QuickTableView::CellSizeCallBack CellSizeCallBack;
+    typedef QuickTableView::NewCellCallBack NewCellCallBack;
+    typedef QuickTableView::NumberCallBack NumberCallBack;
 private:
     // scroll view delegate
     void scrollViewDidScroll(ScrollView* view) override;
@@ -81,103 +84,79 @@ private:
     virtual TableViewCell* tableCellAtIndex(TableView *table, ssize_t idx) override;
     virtual ssize_t numberOfCellsInTableView(TableView *table) override;
 private:
-    CallBackMap mCallback;
+    CellSizeCallBack mCellSizeCallBack;
+    NewCellCallBack mNewCellCallBack;
+    NumberCallBack mNumberCallBack;
+    TouchCellCallBackMap mTouchCallback;
+    ScrollCallBackMap mScrollCallBack;
 };
 
 void QuickTableView::Delegate::scrollViewDidScroll(ScrollView* view) {
-    auto iter = mCallback.find("scrollViewDidScroll");
-    if (iter != mCallback.end()) {
-        Context c(view);
-        Result r;
-        iter->second(c, r);
+    auto iter = mScrollCallBack.find("scrollViewDidScroll");
+    if (iter != mScrollCallBack.end()) {
+        iter->second(view);
     }
 }
 
 void QuickTableView::Delegate::scrollViewDidZoom(ScrollView* view) {
-    auto iter = mCallback.find("scrollViewDidZoom");
-    if (iter != mCallback.end()) {
-        Context c(view);
-        Result r;
-        iter->second(c, r);
+    auto iter = mScrollCallBack.find("scrollViewDidZoom");
+    if (iter != mScrollCallBack.end()) {
+        iter->second(view);
     }
 }
 
 void QuickTableView::Delegate::tableCellTouched(TableView* table, TableViewCell* cell) {
-    auto iter = mCallback.find("tableCellTouched");
-    if (iter != mCallback.end()) {
-        Context c(table, cell, 0);
-        Result r;
-        iter->second(c, r);
+    auto iter = mTouchCallback.find("tableCellTouched");
+    if (iter != mTouchCallback.end()) {
+        iter->second(table, cell);
     }
 }
 
 void QuickTableView::Delegate::tableCellHighlight(TableView* table, TableViewCell* cell) {
-    auto iter = mCallback.find("tableCellHighlight");
-    if (iter != mCallback.end()) {
-        Context c(table, cell, 0);
-        Result r;
-        iter->second(c, r);
+    auto iter = mTouchCallback.find("tableCellHighlight");
+    if (iter != mTouchCallback.end()) {
+        iter->second(table, cell);
     }
 }
 
 void QuickTableView::Delegate::tableCellUnhighlight(TableView* table, TableViewCell* cell) {
-    auto iter = mCallback.find("tableCellUnhighlight");
-    if (iter != mCallback.end()) {
-        Context c(table, cell, 0);
-        Result r;
-        iter->second(c, r);
+    auto iter = mTouchCallback.find("tableCellUnhighlight");
+    if (iter != mTouchCallback.end()) {
+        iter->second(table, cell);
     }
 }
 
 void QuickTableView::Delegate::tableCellWillRecycle(TableView* table, TableViewCell* cell) {
-    auto iter = mCallback.find("tableCellWillRecycle");
-    if (iter != mCallback.end()) {
-        Context c(table, cell, 0);
-        Result r;
-        iter->second(c, r);
+    auto iter = mTouchCallback.find("tableCellWillRecycle");
+    if (iter != mTouchCallback.end()) {
+        iter->second(table, cell);
     }
 }
 
 cocos2d::Size QuickTableView::Delegate::cellSizeForTable(TableView* table) {
-    auto iter = mCallback.find("cellSizeForTable");
-    if (iter != mCallback.end()) {
-        Context c(table, nullptr, 0);
-        Result r;
-        iter->second(c, r);
-        return r.cellSize;
+    if (this->mCellSizeCallBack != nullptr) {
+        return this->mCellSizeCallBack(table, 0);
     }
     return cocos2d::Size::ZERO;
 }
 
 cocos2d::Size QuickTableView::Delegate::tableCellSizeForIndex(TableView* table, ssize_t idx) {
-    auto iter = mCallback.find("tableCellSizeForIndex");
-    if (iter != mCallback.end()) {
-        Context c(table, nullptr, idx);
-        Result r;
-        iter->second(c, r);
-        return r.cellSize;
+    if (this->mCellSizeCallBack != nullptr) {
+        return this->mCellSizeCallBack(table, 0);
     }
-    return cellSizeForTable(table);
+    return cocos2d::Size::ZERO;
 }
 
 TableViewCell* QuickTableView::Delegate::tableCellAtIndex(TableView *table, ssize_t idx) {
-    auto iter = mCallback.find("tableCellAtIndex");
-    if (iter != mCallback.end()) {
-        Context c(table, nullptr, idx);
-        Result r;
-        iter->second(c, r);
-        return r.cell;
+    if (this->mNewCellCallBack != nullptr) {
+        return this->mNewCellCallBack(table, idx);
     }
     return nullptr;
 }
 
 ssize_t QuickTableView::Delegate::numberOfCellsInTableView(TableView *table) {
-    auto iter = mCallback.find("numberOfCellsInTableView");
-    if (iter != mCallback.end()) {
-        Context c(table, nullptr, 0);
-        Result r;
-        iter->second(c, r);
-        return r.number;
+    if (this->mNumberCallBack != nullptr) {
+        return this->mNumberCallBack(table);
     }
     return 0;
 }
@@ -200,8 +179,36 @@ QuickTableView::~QuickTableView() {
     delete this->mDelegate;
 }
 
-void QuickTableView::setCallback(std::string const& apiName, CallBack const& f) {
-    this->mDelegate->mCallback.insert(std::make_pair(apiName, f));
+bool QuickTableView::initWithViewSize(cocos2d::Size const& size, cocos2d::Node* container) {
+    auto r = TableView::initWithViewSize(size, container);
+    this->setVerticalFillOrder(VerticalFillOrder::TOP_DOWN);
+    return r;
+}
+
+void QuickTableView::setCallback(std::string const& apiName, ScrollCallBack const& f) {
+    this->mDelegate->mScrollCallBack[apiName] = f;
+}
+
+void QuickTableView::setCallback(std::string const& apiName, TouchCellCallBack const& f) {
+    this->mDelegate->mTouchCallback[apiName] = f;
+}
+
+void QuickTableView::setCallback(std::string const& apiName, CellSizeCallBack const& f) {
+    if (apiName == "tableCellSizeForIndex") {
+        this->mDelegate->mCellSizeCallBack = f;
+    }
+}
+
+void QuickTableView::setCallback(std::string const& apiName, NewCellCallBack const& f) {
+    if (apiName == "tableCellAtIndex") {
+        this->mDelegate->mNewCellCallBack = f;
+    }
+}
+
+void QuickTableView::setCallback(std::string const& apiName, NumberCallBack const& f) {
+    if (apiName == "numberOfCellsInTableView") {
+        this->mDelegate->mNumberCallBack = f;
+    }
 }
 
 }

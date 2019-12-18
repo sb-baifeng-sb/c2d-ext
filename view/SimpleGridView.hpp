@@ -38,35 +38,26 @@ protected:
 class QuickGridView : public GridView {
     class Delegate;
 public:
-    class Context {
-    public:
-        ScrollView* scroll;
-        TableView* sender;
-        TableViewCell* cell;
-        ssize_t index;
-    public:
-        Context():sender(nullptr), cell(nullptr), index(0){}
-        Context(TableView* table, TableViewCell* cell, ssize_t idx):sender(table), cell(cell), index(idx){}
-        Context(ScrollView* scroll):scroll(scroll), sender(nullptr), cell(nullptr), index(0){}
-    };
-    class Result {
-    public:
-        cocos2d::Size cellSize;
-        TableViewCell* cell;
-        ssize_t number;
-    public:
-        Result():cell(nullptr), number(0){}
-        Result(cocos2d::Size const& cellSize, TableViewCell* cell, ssize_t size):cellSize(cellSize), cell(cell), number(size){}
-    };
-    typedef std::function<void(Context& c, Result& r)> CallBack;
-    typedef std::map<std::string, CallBack> CallBackMap;
+    typedef std::function<void(ScrollView* view)> ScrollCallBack;
+    typedef std::function<void(TableView* table, TableViewCell* cell)> TouchCellCallBack;
+    typedef std::function<cocos2d::Size(TableView *table, ssize_t idx)> CellSizeCallBack;
+    typedef std::function<TableViewCell*(TableView *table, ssize_t idx)> NewCellCallBack;
+    typedef std::function<ssize_t(TableView *table)> NumberCallBack;
+    typedef std::map<std::string, TouchCellCallBack> TouchCellCallBackMap;
+    typedef std::map<std::string, ScrollCallBack> ScrollCallBackMap;
 public:
     static QuickGridView* create(cocos2d::Size const& size);
     CREATE_FUNC(QuickGridView);
     QuickGridView();
     ~QuickGridView();
 public:
-    void setCallback(std::string const& apiName, CallBack const& f);
+    bool initWithViewSize(cocos2d::Size const& size, cocos2d::Node* container = NULL) override;
+public:
+    void setCallback(std::string const& apiName, ScrollCallBack const& f);
+    void setCallback(std::string const& apiName, TouchCellCallBack const& f);
+    void setCallback(std::string const& apiName, CellSizeCallBack const& f);
+    void setCallback(std::string const& apiName, NewCellCallBack const& f);
+    void setCallback(std::string const& apiName, NumberCallBack const& f);
 private:
     Delegate* mDelegate;
 };
