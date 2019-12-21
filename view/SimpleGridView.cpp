@@ -144,7 +144,7 @@ cocos2d::Size QuickGridView::Delegate::cellSizeForTable(TableView* table) {
 
 cocos2d::Size QuickGridView::Delegate::tableCellSizeForIndex(TableView* table, ssize_t idx) {
     if (this->mCellSizeCallBack != nullptr) {
-        return this->mCellSizeCallBack(table, 0);
+        return this->mCellSizeCallBack(table, idx);
     }
     return cocos2d::Size::ZERO;
 }
