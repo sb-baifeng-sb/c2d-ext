@@ -10,13 +10,18 @@ class TouchableView : public cocos2d::Layer {
 public:
     CREATE_FUNC(TouchableView);
     class Context {
+        friend class TouchableView;
     public:
         cocos2d::Node* sender;
         cocos2d::Touch* touch;
         cocos2d::Event* event;
     public:
-        Context(cocos2d::Node* sender, cocos2d::Touch* touch, cocos2d::Event* event):sender(sender), touch(touch), event(event){}
+        Context(cocos2d::Node* sender, cocos2d::Touch* touch, cocos2d::Event* event)
+            :sender(sender), touch(touch), event(event), touch_continue(true) {}
         bool touchInView();
+        void touchBreak();
+    private:
+        bool touch_continue;
     };
     typedef std::function<void(Context& c)> TouchFunc;
     typedef std::map<std::string, TouchFunc> TouchFuncMap;

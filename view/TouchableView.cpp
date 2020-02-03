@@ -11,6 +11,10 @@ bool TouchableView::Context::touchInView() {
     return false;
 }
 
+void TouchableView::Context::touchBreak() {
+    this->touch_continue = false;
+}
+
 TouchableView::TouchableView() {
     this->mDefault = [&](Context const& c) {
         // nothing to do
@@ -37,7 +41,7 @@ bool TouchableView::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_e
         unused_event->stopPropagation();
         Context c(this, touch, unused_event);
         this->get("onTouchBegan")(c);
-        return true;
+        return c.touch_continue;
     }
     return false;
 }
